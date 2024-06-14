@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/ItzTas/bitcoinAPI/internal/auth"
@@ -41,4 +42,13 @@ func (cfg *apiConfig) getUserByToken(header http.Header) (database.User, error) 
 		return database.User{}, errors.New("could not get user")
 	}
 	return dbuser, nil
+}
+
+func secureEndpoint(w http.ResponseWriter, r *http.Request, dbUser database.User) {
+	type returnVal struct {
+		Hello string `json:"hello"`
+	}
+	respondWithJSON(w, http.StatusOK, returnVal{
+		Hello: fmt.Sprintf("Hello there! %v", dbUser.UserName),
+	})
 }

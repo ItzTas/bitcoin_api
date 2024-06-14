@@ -47,6 +47,7 @@ func main() {
 
 	mux.HandleFunc("GET /v1/readiness", readiness)
 	mux.HandleFunc("GET /v1/error", errorTest)
+	mux.HandleFunc("GET /v1/secure_endpoint", cfg.middlewareAuth(secureEndpoint))
 
 	mux.HandleFunc("POST /v1/users", cfg.handlerCreateUser)
 	mux.HandleFunc("GET /v1/users/{user_id}", cfg.handlerGetUserByID)
