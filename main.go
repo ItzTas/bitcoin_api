@@ -47,6 +47,7 @@ func main() {
 
 	mux.HandleFunc("POST /v1/users", cfg.handlerCreateUser)
 	mux.HandleFunc("GET /v1/users/{user_id}", cfg.handlerGetUserByID)
+	mux.HandleFunc("GET /v1/users", cfg.handlerGetUsers) // supports limit(defaults to 20) query
 
 	server := http.Server{
 		Handler:     mux,

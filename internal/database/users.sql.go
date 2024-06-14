@@ -70,3 +70,39 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	)
 	return i, err
 }
+
+const getUsers = `-- name: GetUsers :many
+SELECT id, user_name, email, password, created_at, updated_at, currency FROM users
+LIMIT $1
+`
+
+func (q *Queries) GetUsers(ctx context.Context, limit int64) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, getUsers, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserName,
+			&i.Email,
+			&i.Password,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Currency,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
