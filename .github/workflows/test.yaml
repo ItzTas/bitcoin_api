@@ -20,6 +20,9 @@ jobs:
           with:
             go-version: '1.22.2'
 
+        - name: Get uuid
+          run: go get github.com/google/uuid
+
         - name: Test
           run: go test ./...
 
@@ -41,6 +44,9 @@ jobs:
             uses: actions/setup-go@v5.0.1
             with:
                 go-version: '1.22.2'
+            
+          - name: Get uuid
+            run: go get github.com/google/uuid
             
           - name: Format go
             run: go fmt ./...
