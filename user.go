@@ -15,7 +15,7 @@ type returnValsUser struct {
 	Currency  string    `json:"currency"`
 }
 
-func databaseUserToReturnValsUSer(user database.User) returnValsUser {
+func databaseUserToReturnValsUser(user database.User) returnValsUser {
 	return returnValsUser{
 		ID:        user.ID,
 		UserName:  user.UserName,

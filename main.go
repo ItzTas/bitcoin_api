@@ -14,7 +14,8 @@ import (
 )
 
 type apiConfig struct {
-	DB *database.Queries
+	DB        *database.Queries
+	jwtSecret string
 }
 
 func main() {
@@ -27,6 +28,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	db_url := os.Getenv("DB_URL")
+	jwtSecret := os.Getenv("JWT_SECRET")
 
 	db, err := sql.Open("postgres", db_url)
 	if err != nil {
@@ -37,7 +39,8 @@ func main() {
 	dbQueries := database.New(db)
 
 	cfg := apiConfig{
-		DB: dbQueries,
+		DB:        dbQueries,
+		jwtSecret: jwtSecret,
 	}
 
 	mux := http.NewServeMux()
@@ -47,7 +50,8 @@ func main() {
 
 	mux.HandleFunc("POST /v1/users", cfg.handlerCreateUser)
 	mux.HandleFunc("GET /v1/users/{user_id}", cfg.handlerGetUserByID)
-	mux.HandleFunc("GET /v1/users", cfg.handlerGetUsers) // supports limit (defaults to 20) query
+	mux.HandleFunc("GET /v1/users", cfg.handlerGetUsers) // supports limit query (defaults to 20)
+	// mux.HandleFunc("PUT /v1/users", )
 
 	mux.HandleFunc("POST /v1/login", cfg.handlerLogin)
 

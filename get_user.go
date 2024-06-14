@@ -31,7 +31,7 @@ func (cfg *apiConfig) handlerGetUserByID(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, databaseUserToReturnValsUSer(dbuser))
+	respondWithJSON(w, http.StatusOK, databaseUserToReturnValsUser(dbuser))
 }
 
 func (cfg *apiConfig) handlerGetUsers(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +53,7 @@ func (cfg *apiConfig) handlerGetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	users := funk.Map(dbusers, func(dbu database.User) returnValsUser {
-		return databaseUserToReturnValsUSer(dbu)
+		return databaseUserToReturnValsUser(dbu)
 	}).([]returnValsUser)
 
 	respondWithJSON(w, http.StatusOK, users)

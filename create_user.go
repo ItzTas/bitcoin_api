@@ -53,5 +53,5 @@ func (cfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, databaseUserToReturnValsUSer(dbuser))
+	respondWithJSON(w, http.StatusCreated, databaseUserToReturnValsUser(dbuser))
 }

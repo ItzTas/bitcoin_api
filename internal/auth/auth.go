@@ -2,6 +2,9 @@ package auth
 
 import (
 	"errors"
+	"fmt"
+	"net/http"
+	"strings"
 	"time"
 
 	"github.com/ItzTas/bitcoinAPI/internal/database"
@@ -31,4 +34,37 @@ func NewJWT(dbu database.User, tokenSecret string, expiresIn time.Duration) (str
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(signingKey)
+}
+
+func GetBearerToken(header http.Header) (string, error) {
+	token := header.Get("Authorization")
+	if token == "" {
+		return "", errors.New("empty auth header")
+	}
+
+	slides := strings.Split(token, " ")
+	if len(slides) != 2 || slides[0] != "Bearer" {
+		return "", errors.New("bad formatted auth header")
+	}
+
+	return slides[1], nil
+}
+
+func GetIDByBearerToken(token, secretKey string) (string, error) {
+	tok, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("método de assinatura inesperado: %v", t.Header["alg"])
+		}
+		return secretKey, nil
+	}, jwt.WithValidMethods([]string{"HS256"}))
+
+	if err != nil {
+		return "", err
+	}
+
+	if !tok.Valid {
+		return "", errors.New("invalid token")
+	}
+	id, err := tok.Claims.GetSubject()
+	return id, err
 }
