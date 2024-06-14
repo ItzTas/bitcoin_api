@@ -9,19 +9,7 @@ import (
 	"github.com/ItzTas/bitcoinAPI/internal/auth"
 	"github.com/ItzTas/bitcoinAPI/internal/database"
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 )
-
-const (
-	UniqueViolationErr = pq.ErrorCode("23505")
-)
-
-func isErrorCode(err error, errcode pq.ErrorCode) bool {
-	if pgerr, ok := err.(*pq.Error); ok {
-		return pgerr.Code == errcode
-	}
-	return false
-}
 
 func (cfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
 	type paramethers struct {

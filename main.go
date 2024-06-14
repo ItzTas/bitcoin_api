@@ -46,6 +46,7 @@ func main() {
 	mux.HandleFunc("GET /v1/error", errorTest)
 
 	mux.HandleFunc("POST /v1/users", cfg.handlerCreateUser)
+	mux.HandleFunc("GET /v1/users/{user_id}", cfg.handlerGetUserByID)
 
 	server := http.Server{
 		Handler:     mux,
