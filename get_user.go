@@ -24,7 +24,7 @@ func (cfg *apiConfig) handlerGetUserByID(w http.ResponseWriter, r *http.Request)
 	dbuser, err := cfg.DB.GetUserByID(context.TODO(), id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			respondWithJSON(w, http.StatusBadRequest, "User not found")
+			respondWithJSON(w, http.StatusNotFound, "User not found")
 			return
 		}
 		respondWithError(w, http.StatusInternalServerError, "Could not get user")
@@ -37,7 +37,7 @@ func (cfg *apiConfig) handlerGetUserByID(w http.ResponseWriter, r *http.Request)
 func (cfg *apiConfig) handlerGetUsers(w http.ResponseWriter, r *http.Request) {
 	limitstr := r.URL.Query().Get("limit")
 	if limitstr == "" {
-		limitstr = "10"
+		limitstr = "20"
 	}
 
 	limit, err := strconv.Atoi(limitstr)

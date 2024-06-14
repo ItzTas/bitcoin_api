@@ -9,4 +9,8 @@ WHERE id = $1;
 
 -- name: GetUsers :many
 SELECT * FROM users
-LIMIT $2;
+LIMIT $1;
+
+-- name: GetUserByEmail :one
+SELECT * FROM users
+WHERE email = $1;
