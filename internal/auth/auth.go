@@ -50,16 +50,16 @@ func GetBearerToken(header http.Header) (string, error) {
 	return slides[1], nil
 }
 
-func GetIDByBearerToken(token, secretKey string) (string, error) {
+func GetIDByToken(token, secretKey string) (string, error) {
 	tok, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("método de assinatura inesperado: %v", t.Header["alg"])
 		}
-		return secretKey, nil
+		return []byte(secretKey), nil
 	}, jwt.WithValidMethods([]string{"HS256"}))
 
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("could not get token error: \n%v", err)
 	}
 
 	if !tok.Valid {
