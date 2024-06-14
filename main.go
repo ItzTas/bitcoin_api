@@ -8,11 +8,17 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 func main() {
 	const readTimeout = 5 * time.Minute
-	godotenv.Load()
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("error loading the port")
+		return
+	}
+
 	port := os.Getenv("PORT")
 
 	mux := http.NewServeMux()
