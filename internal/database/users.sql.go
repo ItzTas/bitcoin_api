@@ -129,16 +129,17 @@ func (q *Queries) GetUsers(ctx context.Context, limit int64) ([]User, error) {
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET password = $1, email = $2, user_name = $3
-WHERE id = $4
+SET password = $1, email = $2, user_name = $3, updated_at = $4
+WHERE id = $5
 RETURNING id, user_name, email, password, created_at, updated_at, currency
 `
 
 type UpdateUserParams struct {
-	Password string
-	Email    string
-	UserName string
-	ID       uuid.UUID
+	Password  string
+	Email     string
+	UserName  string
+	UpdatedAt time.Time
+	ID        uuid.UUID
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
@@ -146,6 +147,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		arg.Password,
 		arg.Email,
 		arg.UserName,
+		arg.UpdatedAt,
 		arg.ID,
 	)
 	var i User

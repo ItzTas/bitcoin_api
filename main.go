@@ -18,6 +18,10 @@ type apiConfig struct {
 	jwtSecret string
 }
 
+const (
+	DefaultContextTimeOut = 1 * time.Minute
+)
+
 func main() {
 	const readTimeout = 5 * time.Minute
 	err := godotenv.Load()
@@ -52,7 +56,7 @@ func main() {
 	mux.HandleFunc("POST /v1/users", cfg.handlerCreateUser)
 	mux.HandleFunc("GET /v1/users/{user_id}", cfg.handlerGetUserByID)
 	mux.HandleFunc("GET /v1/users", cfg.handlerGetUsers) // supports limit query (defaults to 20)
-	// mux.HandleFunc("PUT /v1/users", )
+	mux.HandleFunc("PUT /v1/users", cfg.middlewareAuth(cfg.handlerUpdateUser))
 
 	mux.HandleFunc("POST /v1/login", cfg.handlerLogin)
 

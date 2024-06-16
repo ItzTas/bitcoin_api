@@ -31,3 +31,7 @@ func respondWithError(w http.ResponseWriter, status int, message string) {
 		Error: message,
 	})
 }
+
+func respondWithNoContent(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNoContent)
+}

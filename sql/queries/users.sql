@@ -17,6 +17,6 @@ WHERE email = $1;
 
 -- name: UpdateUser :one
 UPDATE users
-SET password = $1, email = $2, user_name = $3
-WHERE id = $4
+SET password = $1, email = $2, user_name = $3, updated_at = $4
+WHERE id = $5
 RETURNING *;
