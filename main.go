@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/ItzTas/bitcoinAPI/internal/client"
 	"github.com/ItzTas/bitcoinAPI/internal/database"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -15,11 +16,13 @@ import (
 
 type apiConfig struct {
 	DB        *database.Queries
+	client    *client.Client
 	jwtSecret string
 }
 
 const (
 	DefaultContextTimeOut = 1 * time.Minute
+	DefaultClientTImeOut  = 5 * time.Minute
 )
 
 func main() {
@@ -33,6 +36,7 @@ func main() {
 	port := os.Getenv("PORT")
 	db_url := os.Getenv("DB_URL")
 	jwtSecret := os.Getenv("JWT_SECRET")
+	geckoKey := os.Getenv("COIN_GECKO_KEY")
 
 	db, err := sql.Open("postgres", db_url)
 	if err != nil {
@@ -45,6 +49,7 @@ func main() {
 	cfg := apiConfig{
 		DB:        dbQueries,
 		jwtSecret: jwtSecret,
+		client:    client.NewClient(DefaultClientTImeOut, geckoKey),
 	}
 
 	mux := http.NewServeMux()
