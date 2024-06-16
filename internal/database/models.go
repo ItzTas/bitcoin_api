@@ -5,7 +5,6 @@
 package database
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -13,12 +12,12 @@ import (
 
 type Cryptocurrency struct {
 	ID              string
-	Symbol          sql.NullString
-	Name            sql.NullString
-	CurrentPriceUsd sql.NullString
-	CurrentPriceEur sql.NullString
-	DescriptionEn   sql.NullString
-	UpdatedAt       sql.NullTime
+	Symbol          string
+	Name            string
+	CurrentPriceUsd string
+	CurrentPriceEur string
+	DescriptionEn   string
+	UpdatedAt       time.Time
 }
 
 type User struct {

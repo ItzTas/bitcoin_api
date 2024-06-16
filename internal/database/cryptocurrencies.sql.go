@@ -7,7 +7,7 @@ package database
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
 const createCrypto = `-- name: CreateCrypto :one
@@ -18,12 +18,12 @@ RETURNING id, symbol, name, current_price_usd, current_price_eur, description_en
 
 type CreateCryptoParams struct {
 	ID              string
-	Symbol          sql.NullString
-	Name            sql.NullString
-	CurrentPriceUsd sql.NullString
-	CurrentPriceEur sql.NullString
-	DescriptionEn   sql.NullString
-	UpdatedAt       sql.NullTime
+	Symbol          string
+	Name            string
+	CurrentPriceUsd string
+	CurrentPriceEur string
+	DescriptionEn   string
+	UpdatedAt       time.Time
 }
 
 func (q *Queries) CreateCrypto(ctx context.Context, arg CreateCryptoParams) (Cryptocurrency, error) {
@@ -77,10 +77,10 @@ RETURNING id, symbol, name, current_price_usd, current_price_eur, description_en
 `
 
 type UpdateCryptoParams struct {
-	CurrentPriceUsd sql.NullString
-	CurrentPriceEur sql.NullString
-	DescriptionEn   sql.NullString
-	UpdatedAt       sql.NullTime
+	CurrentPriceUsd string
+	CurrentPriceEur string
+	DescriptionEn   string
+	UpdatedAt       time.Time
 	ID              string
 }
 

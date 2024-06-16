@@ -71,6 +71,10 @@ func main() {
 		Addr:        ":" + port,
 	}
 
+	fmt.Println(cfg.updateCryptoData(client.Coin{
+		ID: "bitcoin",
+	}))
+
 	fmt.Printf("Listening on port: %v\n", port)
 	log.Fatal(server.ListenAndServe())
 }
