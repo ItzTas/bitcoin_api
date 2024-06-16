@@ -14,3 +14,9 @@ LIMIT $1;
 -- name: GetUserByEmail :one
 SELECT * FROM users
 WHERE email = $1;
+
+-- name: UpdateUser :one
+UPDATE users
+SET password = $1, email = $2, user_name = $3
+WHERE id = $4
+RETURNING *;
