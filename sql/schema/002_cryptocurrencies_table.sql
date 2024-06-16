@@ -5,7 +5,8 @@ CREATE TABLE cryptocurrencies (
     name TEXT UNIQUE,
     current_price_usd NUMERIC,
     current_price_eur NUMERIC,
-    description_en TEXT
+    description_en TEXT,
+    updated_at TIMESTAMP
 );
 
 -- +goose Down

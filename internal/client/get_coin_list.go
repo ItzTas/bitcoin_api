@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetCoinList() (*[]Coin, error) {
+func (c *Client) GetCoinList(limit *int) (*[]Coin, error) {
 	url := BaseCoinDataURL + "list"
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -26,11 +26,24 @@ func (c *Client) GetCoinList() (*[]Coin, error) {
 		return nil, err
 	}
 
-	cd := []Coin{}
-	if err = json.Unmarshal(dat, &cd); err != nil {
+	coins := []Coin{}
+	if err = json.Unmarshal(dat, &coins); err != nil {
 		return nil, err
 	}
 
-	return &cd, nil
+	if limit == nil {
+		return &coins, nil
+	}
+
+	if *limit > len(coins) {
+		*limit = len(coins)
+	}
+
+	cdFilter := make([]Coin, *limit)
+	for i := range *limit {
+		cdFilter[i] = coins[i]
+	}
+
+	return &cdFilter, nil
 
 }
