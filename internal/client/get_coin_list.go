@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetCoinList(limit *int) (*[]Coin, error) {
+func (c *Client) GetCoinList(limit *int) ([]Coin, error) {
 	url := BaseCoinDataURL + "list"
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -32,7 +32,7 @@ func (c *Client) GetCoinList(limit *int) (*[]Coin, error) {
 	}
 
 	if limit == nil {
-		return &coins, nil
+		return coins, nil
 	}
 
 	if *limit > len(coins) {
@@ -44,6 +44,6 @@ func (c *Client) GetCoinList(limit *int) (*[]Coin, error) {
 		cdFilter[i] = coins[i]
 	}
 
-	return &cdFilter, nil
+	return cdFilter, nil
 
 }

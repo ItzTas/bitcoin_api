@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetCoinData(coinID string) (*CoinData, error) {
+func (c *Client) GetCoinData(coinID string) (CoinData, error) {
 	url := BaseCoinDataURL + coinID
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return nil, err
+		return CoinData{}, err
 	}
 
 	req.Header.Add("accept", "application/json")
@@ -18,18 +18,18 @@ func (c *Client) GetCoinData(coinID string) (*CoinData, error) {
 
 	res, err := c.Client.Do(req)
 	if err != nil {
-		return nil, err
+		return CoinData{}, err
 	}
 	defer res.Body.Close()
 	dat, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		return CoinData{}, err
 	}
 
 	cd := CoinData{}
 	if err = json.Unmarshal(dat, &cd); err != nil {
-		return nil, err
+		return CoinData{}, err
 	}
 
-	return &cd, nil
+	return cd, nil
 }

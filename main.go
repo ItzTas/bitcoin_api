@@ -20,9 +20,14 @@ type apiConfig struct {
 	jwtSecret string
 }
 
+var (
+	limit = 10
+)
+
 const (
 	DefaultContextTimeOut = 1 * time.Minute
 	DefaultClientTImeOut  = 5 * time.Minute
+	DefautSaverInterval   = 120 * time.Minute
 )
 
 func main() {
@@ -71,9 +76,18 @@ func main() {
 		Addr:        ":" + port,
 	}
 
-	fmt.Println(cfg.updateCryptoData(client.Coin{
-		ID: "bitcoin",
-	}))
+	go cfg.cryptoSaver(&limit, DefautSaverInterval,
+		client.Coin{
+			ID:     "bitcoin",
+			Symbol: "btc",
+			Name:   "Bitcoin",
+		},
+		client.Coin{
+			ID:     "ethereum",
+			Symbol: "eth",
+			Name:   "Ethereum",
+		},
+	)
 
 	fmt.Printf("Listening on port: %v\n", port)
 	log.Fatal(server.ListenAndServe())
