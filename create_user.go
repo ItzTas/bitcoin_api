@@ -26,6 +26,11 @@ func (cfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	if params.Email == "" || params.Password == "" || params.UserName == "" {
+		respondWithError(w, http.StatusBadRequest, "Fields required empty")
+		return
+	}
+
 	hashsedPassword, err := auth.HashPassword(params.Password)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Could not hash password")

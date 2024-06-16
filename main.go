@@ -70,6 +70,8 @@ func main() {
 
 	mux.HandleFunc("POST /v1/login", cfg.handlerLogin)
 
+	mux.HandleFunc("POST /v1/wallets", cfg.middlewareAuth(cfg.handlerCreateWallet))
+
 	server := http.Server{
 		Handler:     mux,
 		ReadTimeout: readTimeout,

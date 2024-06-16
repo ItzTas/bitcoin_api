@@ -46,6 +46,7 @@ func (cfg *apiConfig) cryptoSaver(limit *int, interval time.Duration, addicional
 			}
 		}(coins)
 		wg.Wait()
+		fmt.Println("Cryptos Saved!")
 	}
 }
 
