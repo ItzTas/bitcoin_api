@@ -29,3 +29,12 @@ type User struct {
 	UpdatedAt time.Time
 	Currency  string
 }
+
+type Wallet struct {
+	ID           uuid.UUID
+	OwnerID      uuid.UUID
+	CryptoTypeID string
+	BalanceUsd   string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
