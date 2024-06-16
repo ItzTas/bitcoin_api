@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/ItzTas/bitcoinAPI/internal/auth"
 	"github.com/ItzTas/bitcoinAPI/internal/client"
 	"github.com/ItzTas/bitcoinAPI/internal/database"
 	"github.com/joho/godotenv"
@@ -15,9 +16,10 @@ import (
 )
 
 type apiConfig struct {
-	DB        *database.Queries
-	client    *client.Client
-	jwtSecret string
+	DB               *database.Queries
+	client           *client.Client
+	jwtSecret        string
+	deleteCodeSecret string
 }
 
 var (
@@ -42,6 +44,9 @@ func main() {
 	db_url := os.Getenv("DB_URL")
 	jwtSecret := os.Getenv("JWT_SECRET")
 	geckoKey := os.Getenv("COIN_GECKO_KEY")
+	deleteCodeSecret := os.Getenv("DELETE_CODE_SECRET")
+
+	fmt.Println(auth.HashPassword(deleteCodeSecret))
 
 	db, err := sql.Open("postgres", db_url)
 	if err != nil {
@@ -52,9 +57,10 @@ func main() {
 	dbQueries := database.New(db)
 
 	cfg := apiConfig{
-		DB:        dbQueries,
-		jwtSecret: jwtSecret,
-		client:    client.NewClient(DefaultClientTImeOut, geckoKey),
+		DB:               dbQueries,
+		jwtSecret:        jwtSecret,
+		client:           client.NewClient(DefaultClientTImeOut, geckoKey),
+		deleteCodeSecret: deleteCodeSecret,
 	}
 
 	mux := http.NewServeMux()
@@ -67,6 +73,7 @@ func main() {
 	mux.HandleFunc("GET /v1/users/{user_id}", cfg.handlerGetUserByID)
 	mux.HandleFunc("GET /v1/users", cfg.handlerGetUsers) // supports limit query (defaults to 20)
 	mux.HandleFunc("PUT /v1/users", cfg.middlewareAuth(cfg.handlerUpdateUser))
+	mux.HandleFunc("DELETE /v1/users/{user_id}", cfg.handlerDeleteUser)
 
 	mux.HandleFunc("POST /v1/login", cfg.handlerLogin)
 

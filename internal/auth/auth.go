@@ -68,3 +68,29 @@ func GetIDByToken(token, secretKey string) (string, error) {
 	id, err := tok.Claims.GetSubject()
 	return id, err
 }
+
+func AuthenticateDeleteKey(headers http.Header, key string) error {
+	delKeyHashed, err := getDeletionKey(headers)
+	if err != nil {
+		return err
+	}
+	if delKeyHashed == "" {
+		return errors.New("no key")
+	}
+
+	return bcrypt.CompareHashAndPassword([]byte(delKeyHashed), []byte(key))
+}
+
+func getDeletionKey(header http.Header) (string, error) {
+	key := header.Get("X-del-key")
+	if key == "" {
+		return "", errors.New("empty auth header")
+	}
+
+	slides := strings.Split(key, " ")
+	if len(slides) != 2 || slides[0] != "x-bitcoiner" {
+		return "", errors.New("bad formatted auth header")
+	}
+
+	return slides[1], nil
+}

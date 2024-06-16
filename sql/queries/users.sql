@@ -20,3 +20,8 @@ UPDATE users
 SET password = $1, email = $2, user_name = $3, updated_at = $4
 WHERE id = $5
 RETURNING *;
+
+-- name: DeleteUser :one
+DELETE FROM users
+WHERE id = $1
+RETURNING *;
