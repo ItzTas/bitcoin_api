@@ -8,7 +8,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/ItzTas/bitcoinAPI/internal/auth"
 	"github.com/ItzTas/bitcoinAPI/internal/client"
 	"github.com/ItzTas/bitcoinAPI/internal/database"
 	"github.com/joho/godotenv"
@@ -46,8 +45,6 @@ func main() {
 	geckoKey := os.Getenv("COIN_GECKO_KEY")
 	deleteCodeSecret := os.Getenv("DELETE_CODE_SECRET")
 
-	fmt.Println(auth.HashPassword(deleteCodeSecret))
-
 	db, err := sql.Open("postgres", db_url)
 	if err != nil {
 		log.Fatal("Could not stablish connection to the database")
@@ -75,7 +72,7 @@ func main() {
 	mux.HandleFunc("PUT /v1/users", cfg.middlewareAuth(cfg.handlerUpdateUser))
 	mux.HandleFunc("DELETE /v1/users/{user_id}", cfg.handlerDeleteUser)
 
-	mux.HandleFunc("PUT /v1/users/{receiver_id}/transactions", cfg.middlewareAuth(cfg.handlerSendToAccount))
+	mux.HandleFunc("POST /v1/users/{receiver_id}/transactions", cfg.middlewareAuth(cfg.handlerSendToAccount))
 
 	mux.HandleFunc("POST /v1/login", cfg.handlerLogin)
 

@@ -28,6 +28,6 @@ RETURNING *;
 
 -- name: UpdateUserCurrency :one
 UPDATE users
-SET currency = $1
-WHERE id = $2
+SET currency = $1, updated_at = $2
+WHERE id = $3
 RETURNING *;
