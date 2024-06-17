@@ -50,7 +50,7 @@ func main() {
 
 	db, err := sql.Open("postgres", db_url)
 	if err != nil {
-		fmt.Println("Could not stablish connection to the database")
+		log.Fatal("Could not stablish connection to the database")
 		return
 	}
 
@@ -74,6 +74,8 @@ func main() {
 	mux.HandleFunc("GET /v1/users", cfg.handlerGetUsers) // supports limit query (defaults to 20)
 	mux.HandleFunc("PUT /v1/users", cfg.middlewareAuth(cfg.handlerUpdateUser))
 	mux.HandleFunc("DELETE /v1/users/{user_id}", cfg.handlerDeleteUser)
+
+	mux.HandleFunc("PUT /v1/users/{user_id}/deposit", cfg.handlerDepositToAccount)
 
 	mux.HandleFunc("POST /v1/login", cfg.handlerLogin)
 
