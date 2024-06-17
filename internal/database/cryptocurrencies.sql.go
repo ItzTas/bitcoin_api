@@ -69,6 +69,61 @@ func (q *Queries) GetCryptoByID(ctx context.Context, id string) (Cryptocurrency,
 	return i, err
 }
 
+const getCryptocurrencies = `-- name: GetCryptocurrencies :many
+SELECT id, symbol, name, current_price_usd, current_price_eur, description_en, updated_at FROM cryptocurrencies
+`
+
+func (q *Queries) GetCryptocurrencies(ctx context.Context) ([]Cryptocurrency, error) {
+	rows, err := q.db.QueryContext(ctx, getCryptocurrencies)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Cryptocurrency
+	for rows.Next() {
+		var i Cryptocurrency
+		if err := rows.Scan(
+			&i.ID,
+			&i.Symbol,
+			&i.Name,
+			&i.CurrentPriceUsd,
+			&i.CurrentPriceEur,
+			&i.DescriptionEn,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getCryptocurrencyByID = `-- name: GetCryptocurrencyByID :one
+SELECT id, symbol, name, current_price_usd, current_price_eur, description_en, updated_at FROM cryptocurrencies
+WHERE id = $1
+`
+
+func (q *Queries) GetCryptocurrencyByID(ctx context.Context, id string) (Cryptocurrency, error) {
+	row := q.db.QueryRowContext(ctx, getCryptocurrencyByID, id)
+	var i Cryptocurrency
+	err := row.Scan(
+		&i.ID,
+		&i.Symbol,
+		&i.Name,
+		&i.CurrentPriceUsd,
+		&i.CurrentPriceEur,
+		&i.DescriptionEn,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const updateCrypto = `-- name: UpdateCrypto :one
 UPDATE cryptocurrencies
 SET current_price_usd = $1, current_price_eur = $2, description_en = $3, updated_at = $4

@@ -12,3 +12,10 @@ RETURNING *;
 -- name: GetCryptoByID :one
 SELECT * FROM cryptocurrencies
 WHERE id = $1;
+
+-- name: GetCryptocurrencies :many
+SELECT * FROM cryptocurrencies;
+
+-- name: GetCryptocurrencyByID :one
+SELECT * FROM cryptocurrencies
+WHERE id = $1;

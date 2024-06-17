@@ -78,6 +78,9 @@ func main() {
 
 	mux.HandleFunc("POST /v1/wallets", cfg.middlewareAuth(cfg.handlerCreateWallet))
 
+	mux.HandleFunc("GET /v1/coins", cfg.handlerRetriveCoins)
+	mux.HandleFunc("GET /v1/coins/{coin_id}", cfg.handlerRetriveCoinByID)
+
 	server := http.Server{
 		Handler:     mux,
 		ReadTimeout: readTimeout,
