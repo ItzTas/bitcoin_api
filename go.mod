@@ -12,5 +12,6 @@ require golang.org/x/crypto v0.24.0 // direct
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
+	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/thoas/go-funk v0.9.3 // indirect
 )

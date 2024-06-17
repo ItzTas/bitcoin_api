@@ -75,7 +75,7 @@ func main() {
 	mux.HandleFunc("PUT /v1/users", cfg.middlewareAuth(cfg.handlerUpdateUser))
 	mux.HandleFunc("DELETE /v1/users/{user_id}", cfg.handlerDeleteUser)
 
-	mux.HandleFunc("PUT /v1/users/{user_id}/deposit", cfg.handlerDepositToAccount)
+	mux.HandleFunc("PUT /v1/users/{receiver_id}/transactions", cfg.middlewareAuth(cfg.handlerSendToAccount))
 
 	mux.HandleFunc("POST /v1/login", cfg.handlerLogin)
 

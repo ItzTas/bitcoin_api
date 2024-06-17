@@ -13,5 +13,5 @@ CREATE TABLE transactions (
         REFERENCES users(id)
 );
 
--- +gose Down
+-- +goose Down
 DROP TABLE transactions;

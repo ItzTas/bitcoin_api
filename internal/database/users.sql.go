@@ -183,3 +183,30 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 	)
 	return i, err
 }
+
+const updateUserCurrency = `-- name: UpdateUserCurrency :one
+UPDATE users
+SET currency = $1
+WHERE id = $2
+RETURNING id, user_name, email, password, created_at, updated_at, currency
+`
+
+type UpdateUserCurrencyParams struct {
+	Currency string
+	ID       uuid.UUID
+}
+
+func (q *Queries) UpdateUserCurrency(ctx context.Context, arg UpdateUserCurrencyParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUserCurrency, arg.Currency, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.UserName,
+		&i.Email,
+		&i.Password,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Currency,
+	)
+	return i, err
+}

@@ -20,6 +20,14 @@ type Cryptocurrency struct {
 	UpdatedAt       time.Time
 }
 
+type Transaction struct {
+	ID         uuid.UUID
+	SenderID   uuid.UUID
+	ReceiverID uuid.UUID
+	Amount     string
+	ExecutedAt time.Time
+}
+
 type User struct {
 	ID        uuid.UUID
 	UserName  string

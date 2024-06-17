@@ -25,3 +25,9 @@ RETURNING *;
 DELETE FROM users
 WHERE id = $1
 RETURNING *;
+
+-- name: UpdateUserCurrency :one
+UPDATE users
+SET currency = $1
+WHERE id = $2
+RETURNING *;
