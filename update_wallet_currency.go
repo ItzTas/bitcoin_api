@@ -76,38 +76,28 @@ func (cfg *apiConfig) handlerUpdateWalletCurrency(w http.ResponseWriter, r *http
 		return
 	}
 
-	transaction, err := cfg.makeInternalWalletTransaction(dbUser, wallet, v)
+	deposit, err := cfg.makeDeposit(dbUser, wallet, v)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Could not create transaction: %v", err))
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, databaseTransactionToTransaction(transaction))
+	respondWithJSON(w, http.StatusOK, databaseDepositToDeposit(deposit))
 }
 
-func (cfg *apiConfig) makeInternalWalletTransaction(user database.User, wallet database.Wallet, quantity decimal.Decimal) (database.Transaction, error) {
+func (cfg *apiConfig) makeDeposit(user database.User, wallet database.Wallet, quantity decimal.Decimal) (database.Deposit, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), DefaultContextTimeOut)
 	defer cancel()
 	id := uuid.New()
 
-	var senderID uuid.UUID
-	var receiverID uuid.UUID
-	if quantity.Compare(decimal.Zero) < 0 {
-		receiverID = user.ID
-		senderID = wallet.ID
-	} else {
-		receiverID = wallet.ID
-		senderID = user.ID
-	}
-
 	userCurrency, err := decimal.NewFromString(user.Currency)
 	if err != nil {
-		return database.Transaction{}, err
+		return database.Deposit{}, err
 	}
 
 	walletCurrency, err := decimal.NewFromString(wallet.BalanceUsd)
 	if err != nil {
-		return database.Transaction{}, err
+		return database.Deposit{}, err
 	}
 
 	uucParams := database.UpdateUserCurrencyParams{
@@ -117,7 +107,7 @@ func (cfg *apiConfig) makeInternalWalletTransaction(user database.User, wallet d
 	}
 	_, err = cfg.DB.UpdateUserCurrency(ctx, uucParams)
 	if err != nil {
-		return database.Transaction{}, err
+		return database.Deposit{}, err
 	}
 
 	uwParams := database.UpdateWalletParams{
@@ -125,36 +115,35 @@ func (cfg *apiConfig) makeInternalWalletTransaction(user database.User, wallet d
 		UpdatedAt:  time.Now().UTC(),
 		ID:         wallet.ID,
 	}
+
 	_, err = cfg.DB.UpdateWallet(ctx, uwParams)
+
 	if err != nil {
 		err := cfg.rollbackCurrencyUpdate(ctx, user)
 		if err != nil {
-			return database.Transaction{}, fmt.Errorf("could not roll user back: \n%v", err)
+			return database.Deposit{}, fmt.Errorf("could not roll user back: \n%v", err)
 		}
-		return database.Transaction{}, err
+		return database.Deposit{}, err
 	}
 
-	ctParams := database.CreateTransactionParams{
-		ID:             id,
-		SenderID:       senderID,
-		ReceiverID:     receiverID,
-		Amount:         quantity.String(),
-		ExecutedAt:     time.Now().UTC(),
-		IsBetweenUsers: false,
+	cdParams := database.CreateDepositParams{
+		ID:         id,
+		WalletID:   wallet.ID,
+		Amount:     quantity.String(),
+		ExecutedAt: time.Now().UTC(),
 	}
 
-	transaction, err := cfg.DB.CreateTransaction(ctx, ctParams)
+	deposit, err := cfg.DB.CreateDeposit(ctx, cdParams)
 	if err != nil {
-		err := cfg.rollbackCurrencyUpdate(ctx, user)
-		if err != nil {
-			return database.Transaction{}, fmt.Errorf("could not roll user back: \n%v", err)
+		if err := cfg.rollbackCurrencyUpdate(ctx, user); err != nil {
+			return database.Deposit{}, fmt.Errorf("could not roll user back: \n%v", err)
 		}
-		err = cfg.rollbackCurrencyWalletupdate(ctx, wallet)
-		if err != nil {
-			return database.Transaction{}, fmt.Errorf("could not roll wallet back: \n%v", err)
+
+		if err := cfg.rollbackCurrencyWalletupdate(ctx, wallet); err != nil {
+			return database.Deposit{}, fmt.Errorf("could not roll wallet back: \n%v", err)
 		}
 	}
-	return transaction, nil
+	return deposit, err
 }
 
 func (cfg *apiConfig) rollbackCurrencyWalletupdate(ctx context.Context, wallet database.Wallet) error {

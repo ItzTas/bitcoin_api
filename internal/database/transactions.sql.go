@@ -13,18 +13,17 @@ import (
 )
 
 const createTransaction = `-- name: CreateTransaction :one
-INSERT INTO transactions (id, sender_id, receiver_id, amount, executed_at, is_between_users)
-VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING id, sender_id, receiver_id, amount, executed_at, is_between_users
+INSERT INTO transactions (id, sender_id, receiver_id, amount, executed_at)
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id, sender_id, receiver_id, amount, executed_at
 `
 
 type CreateTransactionParams struct {
-	ID             uuid.UUID
-	SenderID       uuid.UUID
-	ReceiverID     uuid.UUID
-	Amount         string
-	ExecutedAt     time.Time
-	IsBetweenUsers bool
+	ID         uuid.UUID
+	SenderID   uuid.UUID
+	ReceiverID uuid.UUID
+	Amount     string
+	ExecutedAt time.Time
 }
 
 func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error) {
@@ -34,7 +33,6 @@ func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionPa
 		arg.ReceiverID,
 		arg.Amount,
 		arg.ExecutedAt,
-		arg.IsBetweenUsers,
 	)
 	var i Transaction
 	err := row.Scan(
@@ -43,7 +41,6 @@ func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionPa
 		&i.ReceiverID,
 		&i.Amount,
 		&i.ExecutedAt,
-		&i.IsBetweenUsers,
 	)
 	return i, err
 }

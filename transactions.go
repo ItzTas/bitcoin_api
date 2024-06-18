@@ -116,12 +116,11 @@ func (cfg *apiConfig) makeUserTransaction(senderID, receiverID uuid.UUID, quanti
 
 	id := uuid.New()
 	transactionParams := database.CreateTransactionParams{
-		ID:             id,
-		SenderID:       senderID,
-		ReceiverID:     receiverID,
-		Amount:         quantity.String(),
-		ExecutedAt:     time.Now().UTC(),
-		IsBetweenUsers: true,
+		ID:         id,
+		SenderID:   senderID,
+		ReceiverID: receiverID,
+		Amount:     quantity.String(),
+		ExecutedAt: time.Now().UTC(),
 	}
 
 	transaction, err := cfg.DB.CreateTransaction(ctx, transactionParams)
