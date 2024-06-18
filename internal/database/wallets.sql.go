@@ -47,3 +47,54 @@ func (q *Queries) CreateWallet(ctx context.Context, arg CreateWalletParams) (Wal
 	)
 	return i, err
 }
+
+const getUserTypeWallet = `-- name: GetUserTypeWallet :one
+SELECT id, owner_id, crypto_type_id, balance_usd, created_at, updated_at FROM wallets
+WHERE owner_id = $1 AND crypto_type_id = $2
+`
+
+type GetUserTypeWalletParams struct {
+	OwnerID      uuid.UUID
+	CryptoTypeID string
+}
+
+func (q *Queries) GetUserTypeWallet(ctx context.Context, arg GetUserTypeWalletParams) (Wallet, error) {
+	row := q.db.QueryRowContext(ctx, getUserTypeWallet, arg.OwnerID, arg.CryptoTypeID)
+	var i Wallet
+	err := row.Scan(
+		&i.ID,
+		&i.OwnerID,
+		&i.CryptoTypeID,
+		&i.BalanceUsd,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateWallet = `-- name: UpdateWallet :one
+UPDATE wallets
+SET balance_usd = $1, updated_at = $2
+WHERE id = $3
+RETURNING id, owner_id, crypto_type_id, balance_usd, created_at, updated_at
+`
+
+type UpdateWalletParams struct {
+	BalanceUsd string
+	UpdatedAt  time.Time
+	ID         uuid.UUID
+}
+
+func (q *Queries) UpdateWallet(ctx context.Context, arg UpdateWalletParams) (Wallet, error) {
+	row := q.db.QueryRowContext(ctx, updateWallet, arg.BalanceUsd, arg.UpdatedAt, arg.ID)
+	var i Wallet
+	err := row.Scan(
+		&i.ID,
+		&i.OwnerID,
+		&i.CryptoTypeID,
+		&i.BalanceUsd,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}

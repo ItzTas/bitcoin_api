@@ -7,7 +7,7 @@ CREATE TABLE wallets (
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     CONSTRAINT fk_owner_id
-        FOREIGN KEY (owner_id) 
+        FOREIGN KEY (owner_id)
         REFERENCES users(id)
         ON DELETE CASCADE,
     CONSTRAINT fk_crypto_type_id

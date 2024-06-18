@@ -21,11 +21,12 @@ type Cryptocurrency struct {
 }
 
 type Transaction struct {
-	ID         uuid.UUID
-	SenderID   uuid.UUID
-	ReceiverID uuid.UUID
-	Amount     string
-	ExecutedAt time.Time
+	ID             uuid.UUID
+	SenderID       uuid.UUID
+	ReceiverID     uuid.UUID
+	Amount         string
+	ExecutedAt     time.Time
+	IsBetweenUsers bool
 }
 
 type User struct {

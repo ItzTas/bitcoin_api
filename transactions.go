@@ -57,7 +57,7 @@ func (cfg *apiConfig) handlerSendToAccount(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	transaction, err := cfg.makeTransaction(dbUser.ID, receiverID, sendQuant)
+	transaction, err := cfg.makeUserTransaction(dbUser.ID, receiverID, sendQuant)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("Could not make transaction: \n%v", err))
 		return
@@ -66,7 +66,7 @@ func (cfg *apiConfig) handlerSendToAccount(w http.ResponseWriter, r *http.Reques
 	respondWithJSON(w, http.StatusCreated, databaseTransactionToTransaction(transaction))
 }
 
-func (cfg *apiConfig) makeTransaction(senderID, receiverID uuid.UUID, quantity decimal.Decimal) (database.Transaction, error) {
+func (cfg *apiConfig) makeUserTransaction(senderID, receiverID uuid.UUID, quantity decimal.Decimal) (database.Transaction, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), DefaultContextTimeOut)
 	defer cancel()
 
@@ -116,11 +116,12 @@ func (cfg *apiConfig) makeTransaction(senderID, receiverID uuid.UUID, quantity d
 
 	id := uuid.New()
 	transactionParams := database.CreateTransactionParams{
-		ID:         id,
-		SenderID:   senderID,
-		ReceiverID: receiverID,
-		Amount:     quantity.String(),
-		ExecutedAt: time.Now().UTC(),
+		ID:             id,
+		SenderID:       senderID,
+		ReceiverID:     receiverID,
+		Amount:         quantity.String(),
+		ExecutedAt:     time.Now().UTC(),
+		IsBetweenUsers: true,
 	}
 
 	transaction, err := cfg.DB.CreateTransaction(ctx, transactionParams)
