@@ -68,12 +68,12 @@ func main() {
 
 	mux.HandleFunc("POST /v1/users", cfg.handlerCreateUser)
 	mux.HandleFunc("GET /v1/users/{user_id}", cfg.handlerGetUserByID)
-	mux.HandleFunc("GET /v1/users", cfg.handlerGetUsers) // supports limit query (defaults to 20)
-	mux.HandleFunc("GET /v1/users/{user_id}/transactions", cfg.handlerGetUserTransactions)
+	mux.HandleFunc("GET /v1/users", cfg.handlerGetUsers)                                   // supports limit query (defaults to 20)
+	mux.HandleFunc("GET /v1/users/{user_id}/transactions", cfg.handlerGetUserTransactions) // supports limit query
+	mux.HandleFunc("GET /v1/users/{user_id}/deposits", cfg.handlerGetUserDeposits)         // supports limit query
+	mux.HandleFunc("POST /v1/users/{receiver_id}/transactions", cfg.middlewareAuth(cfg.handlerSendToAccount))
 	mux.HandleFunc("PUT /v1/users", cfg.middlewareAuth(cfg.handlerUpdateUser))
 	mux.HandleFunc("DELETE /v1/users/{user_id}", cfg.handlerDeleteUser)
-
-	mux.HandleFunc("POST /v1/users/{receiver_id}/transactions", cfg.middlewareAuth(cfg.handlerSendToAccount))
 
 	mux.HandleFunc("POST /v1/login", cfg.handlerLogin)
 

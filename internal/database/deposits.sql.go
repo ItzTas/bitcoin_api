@@ -41,3 +41,83 @@ func (q *Queries) CreateDeposit(ctx context.Context, arg CreateDepositParams) (D
 	)
 	return i, err
 }
+
+const getDepositsByUserID = `-- name: GetDepositsByUserID :many
+SELECT id, wallet_id, amount, executed_at FROM deposits
+WHERE wallet_id IN (
+    SELECT id
+    FROM wallets
+    WHERE owner_id = $1
+)
+`
+
+func (q *Queries) GetDepositsByUserID(ctx context.Context, ownerID uuid.UUID) ([]Deposit, error) {
+	rows, err := q.db.QueryContext(ctx, getDepositsByUserID, ownerID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Deposit
+	for rows.Next() {
+		var i Deposit
+		if err := rows.Scan(
+			&i.ID,
+			&i.WalletID,
+			&i.Amount,
+			&i.ExecutedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getDepositsByUserIDWithLimit = `-- name: GetDepositsByUserIDWithLimit :many
+SELECT id, wallet_id, amount, executed_at FROM deposits
+WHERE wallet_id IN (
+    SELECT id
+    FROM wallets
+    WHERE owner_id = $1
+)
+LIMIT $2
+`
+
+type GetDepositsByUserIDWithLimitParams struct {
+	OwnerID uuid.UUID
+	Limit   int64
+}
+
+func (q *Queries) GetDepositsByUserIDWithLimit(ctx context.Context, arg GetDepositsByUserIDWithLimitParams) ([]Deposit, error) {
+	rows, err := q.db.QueryContext(ctx, getDepositsByUserIDWithLimit, arg.OwnerID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Deposit
+	for rows.Next() {
+		var i Deposit
+		if err := rows.Scan(
+			&i.ID,
+			&i.WalletID,
+			&i.Amount,
+			&i.ExecutedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
