@@ -81,7 +81,7 @@ func main() {
 	mux.HandleFunc("GET /v1/coins", cfg.handlerRetriveCoins)
 	mux.HandleFunc("GET /v1/coins/{coin_id}", cfg.handlerRetriveCoinByID)
 
-	mux.HandleFunc("PUT /V1/wallets/{coin_id}/coins", cfg.middlewareAuth(cfg.handlerUpdateWalletCurrency))
+	mux.HandleFunc("PUT /v1/wallets/{coin_id}/coins", cfg.middlewareAuth(cfg.handlerUpdateWalletCurrency))
 
 	server := http.Server{
 		Handler:     mux,

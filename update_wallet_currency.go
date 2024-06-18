@@ -59,7 +59,7 @@ func (cfg *apiConfig) handlerUpdateWalletCurrency(w http.ResponseWriter, r *http
 		return
 	}
 
-	if v.Add(walletVal).Compare(decimal.Zero) < 0 {
+	if v.LessThan(decimal.Zero) && v.Add(walletVal).LessThan(decimal.Zero) {
 		respondWithError(w, http.StatusBadRequest, "The value cannot be greater than the wallet currency")
 		return
 	}
@@ -70,7 +70,8 @@ func (cfg *apiConfig) handlerUpdateWalletCurrency(w http.ResponseWriter, r *http
 		return
 	}
 
-	if v.Compare(userCurrency) < 0 {
+	if v.GreaterThan(userCurrency) {
+		fmt.Println(v)
 		respondWithError(w, http.StatusBadRequest, "value cannot be grater than the user currency")
 		return
 	}
