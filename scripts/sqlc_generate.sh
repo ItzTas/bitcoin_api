@@ -1,4 +1,4 @@
 #!/bin/bash
-cd itzTas/bitcoin_api/
+cd bitcoin_api/
 
 dotenv -e .env -- sqlc generate

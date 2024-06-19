@@ -1,4 +1,4 @@
-cd itzTas/bitcoin_api/
+cd bitcoin_api
 
 if [ -f .env ]; then
     export $(cat .env | xargs)
