@@ -1,4 +1,4 @@
-module github.com/ItzTas/bitcoinAPI
+module github.com/ItzTas/coinerAPI
 
 go 1.22.2
 

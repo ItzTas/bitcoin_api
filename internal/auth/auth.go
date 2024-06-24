@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ItzTas/bitcoinAPI/internal/database"
+	"github.com/ItzTas/coinerAPI/internal/database"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )

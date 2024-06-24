@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/ItzTas/bitcoinAPI/internal/auth"
+	"github.com/ItzTas/coinerAPI/internal/auth"
 	"github.com/google/uuid"
 )
 

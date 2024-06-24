@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ItzTas/bitcoinAPI/internal/auth"
-	"github.com/ItzTas/bitcoinAPI/internal/database"
+	"github.com/ItzTas/coinerAPI/internal/auth"
+	"github.com/ItzTas/coinerAPI/internal/database"
 	"github.com/google/uuid"
 )
 

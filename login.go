@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ItzTas/bitcoinAPI/internal/auth"
+	"github.com/ItzTas/coinerAPI/internal/auth"
 	"golang.org/x/crypto/bcrypt"
 )
 

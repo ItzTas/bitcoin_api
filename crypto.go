@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ItzTas/bitcoinAPI/internal/client"
-	"github.com/ItzTas/bitcoinAPI/internal/database"
+	"github.com/ItzTas/coinerAPI/internal/client"
+	"github.com/ItzTas/coinerAPI/internal/database"
 )
 
 var (

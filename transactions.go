@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ItzTas/bitcoinAPI/internal/database"
+	"github.com/ItzTas/coinerAPI/internal/database"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )

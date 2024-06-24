@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/ItzTas/bitcoinAPI/internal/client"
-	"github.com/ItzTas/bitcoinAPI/internal/database"
+	"github.com/ItzTas/coinerAPI/internal/client"
+	"github.com/ItzTas/coinerAPI/internal/database"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
