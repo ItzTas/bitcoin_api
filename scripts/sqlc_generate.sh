@@ -1,4 +1,4 @@
 #!/bin/bash
-cd bitcoin_api/
+cd coiner_api
 
 dotenv -e .env -- sqlc generate

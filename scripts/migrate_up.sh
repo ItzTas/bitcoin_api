@@ -1,4 +1,4 @@
-cd bitcoin_api
+cd coiner_api
 
 if [ -f .env ]; then
     export $(cat .env | xargs)
