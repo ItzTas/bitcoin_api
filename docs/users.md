@@ -138,7 +138,7 @@ This endpoint will send money from one user to another, update their currency an
 
 ## GET /v1/users/{user_id}/transactions
 
-This endpoint returns every transaction from one user 
+This endpoint returns every transaction from one user
 
 > Query params
 

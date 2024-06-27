@@ -79,11 +79,10 @@ func main() {
 	mux.HandleFunc("POST /v1/login", cfg.handlerLogin)
 
 	mux.HandleFunc("POST /v1/wallets", cfg.middlewareAuth(cfg.handlerCreateWallet))
+	mux.HandleFunc("PUT /v1/wallets/{coin_id}/coins", cfg.middlewareAuth(cfg.handlerUpdateWalletCurrency))
 
 	mux.HandleFunc("GET /v1/coins", cfg.handlerRetriveCoins)
 	mux.HandleFunc("GET /v1/coins/{coin_id}", cfg.handlerRetriveCoinByID)
-
-	mux.HandleFunc("PUT /v1/wallets/{coin_id}/coins", cfg.middlewareAuth(cfg.handlerUpdateWalletCurrency))
 
 	server := http.Server{
 		Handler:     mux,
