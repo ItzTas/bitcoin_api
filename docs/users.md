@@ -10,6 +10,8 @@ no body params required
 
 - limit: Sets the limit of users returned (defaults to 20)
 
+---
+
 > Example response
 
 ```json
@@ -143,6 +145,8 @@ This endpoint returns every transaction from one user
 > Query params
 
 - Limit param
+
+---
 
 - Example response
 
