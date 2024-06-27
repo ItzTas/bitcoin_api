@@ -1,6 +1,6 @@
 # Coiner API
 
-This is an api that handles the back end of a cryptocurrency trading app
+This is coiner API! an API that handles the back end of a cryptocurrency trading app
 
 ## Endpoints
 
