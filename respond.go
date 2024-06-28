@@ -7,6 +7,7 @@ import (
 )
 
 func respondWithJSON[T any](w http.ResponseWriter, status int, payload T) {
+	w.Header().Set("Content-type", "application/json")
 	resp, err := json.Marshal(payload)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
